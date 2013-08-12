@@ -1,0 +1,3 @@
+#!/usr/bin/env node
+
+require('../html5video-cli.js').main();

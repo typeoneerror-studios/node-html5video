@@ -1,0 +1,19 @@
+{
+  "name": "html5video",
+  "version": "0.1.0",
+  "description": "A utility for encoding your videos in multiple formats for HTML5 playback.",
+  "author": "Sean Monahan <sean.monahan@typeoneerror.com>",
+  "license": "MIT",
+  "main": "html5video.js",
+  "dependencies": {
+    "optimist": "0.6.0",
+    "fluent-ffmpeg": "1.5.2"
+  },
+  "bin": {
+    "pngoptim": "./bin/html5video-cli"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:typeoneerror-studios/node-html5video.git"
+  }
+}
