@@ -7,10 +7,12 @@
   "main": "html5video.js",
   "dependencies": {
     "optimist": "0.6.0",
-    "fluent-ffmpeg": "1.5.2"
+    "fluent-ffmpeg": "git://github.com/NoobsArePeople2/node-fluent-ffmpeg.git",
+    "mkdirp": "0.3.5"
   },
   "bin": {
-    "pngoptim": "./bin/html5video-cli"
+    "html5video": "./bin/html5video-cli",
+    "h5v": "./bin/html5video-cli"
   },
   "repository": {
     "type": "git",
