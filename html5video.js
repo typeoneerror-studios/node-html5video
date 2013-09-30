@@ -534,9 +534,9 @@ var run = function(src, out, vbr, abr, formats, width, height, poster, posterTim
   options.height          = parseInt(height) || options.height;
   options.poster          = poster || options.poster;
   options.posterTimestamp = posterTimestamp || options.posterTimestamp;
-  options.onlyPoster      = onlyPoster;
-  options.verbose         = verbose;
-  options.progress        = progress;
+  options.onlyPoster      = (onlyPoster === true) ? true : false;
+  options.verbose         = (verbose === true) ? true : false;
+  options.progress        = (progress === true) ? true : false;
   options.timeout         = timeout || 600; // 10 minutes
   options.options         = opts || [];
 

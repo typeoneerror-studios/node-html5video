@@ -125,6 +125,52 @@ There are two options for logging output with `h5v`: `progress` and `verbose`. B
     # Enable verbose logging
     $ h5v -s my_src_video.mov -o -my_html5_video --verbose
 
+## Using h5v in Node
+
+Though `h5v` was intended to be run primarily from the command line it's also possible to use it via a Node application. To use `h5v` in your Node app simply require it like so:
+
+    var h5v = require('html5video');
+
+When used in Node, `h5v` has a single method `run()` that takes the following parameters, in order:
+
+- __src:__             _(string)_ Relative path to the source video. Required.
+- __out:__             _(string)_ Relative path to the output video. Optional. Default: {source-video-name}-html5.
+- __vbr:__             _(string)_ Video bitrate in kbps, e.g., '700k'. Optional. Default: 700k.
+- __abr:__             _(string)_ Audio bitrate in kbps, e.g., '128k'. Optional. Default: 128k.
+- __formats:__         _(Array)_ Array of formats to encode, e.g, [ 'webm', 'h264' ]. Optional. Default: [] (empty array, all supported formats).
+- __width:__           _(int)_ Width of the output video. Height will be auto-calculated to match aspect ratio of source video. Optional. Default: -1 (use source video width).
+- __height:__          _(int)_ Height of the output video. Width will be auto-calculated to match aspect ratio of source video. Optional. Default: -1 (use source video height).
+- __poster:__          _(string)_ Name of the poster image. Optional. Default: poster.
+- __posterTimestamp:__ _(float)_ Time, in seconds, at which to generate the poster image. Optional. Default: 0.0.
+- __onlyPoster:__      _(boolean)_ Only generate the poster image. Optional. Default: false.
+- __verbose:__         _(boolean)_ Log lots of messagse with `console.log()`. Optional. Default: false.
+- __timeout:__         _(int)_ Timeout, in seconds, before ffmpeg is considered unresponsive and its process killed. Optional. Default: 600 (10 minutes).
+- __options:__         _(array)_ Optional extra ffmpeg options to pass in. Optional. Default: [] (empty array, no options).
+
+The simplest usage would look like this:
+
+    h5v.run('my-source-video.mov');
+
+Using all the options would look like:
+
+    h5v.run(
+
+        'my-source-video.mov',      // src
+        'my-html5-video',           // out
+        '700k',                     // vbr
+        '128k',                     // abr
+        [ 'webm', 'h264', 'ogg' ],  // formats
+        960,                        // width
+        -1,                         // height
+        'poster',                   // poster
+        2,                          // posterTimestamp
+        false,                      // onlyPoster
+        true,                       // verbose
+        600,                        // timeout
+        []                          // options
+
+    );
+
 ## Other Things to Keep In Mind
 
 - All file paths are relative to where you are executing `h5v`.
