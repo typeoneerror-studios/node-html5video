@@ -227,7 +227,7 @@ var isAbsolutePath = function(path) {
 var getAbsolutePathToFile = function(file) {
 
   if (isAbsolutePath(file)) {
-    return true;
+    return file;
   }
 
   var cwd = process.cwd();
@@ -526,9 +526,9 @@ var encode = function(vid) {
 var run = function(src, out, vbr, abr, formats, width, height, poster, posterTimestamp, onlyPoster, verbose, progress, timeout, opts) {
 
   options.src             = getAbsolutePathToFile(src);
-  options.output          = getAbsolutePathToFile(out.replace('{src_name}', src));
-  options.vbr             = vbr || options.vbr;
-  options.abr             = abr || options.abr;
+  options.output          = (typeof out != 'undefined') ? getAbsolutePathToFile(out.replace('{src_name}', src)) : options.output.replace('{src_name}', src)
+  options.vbr             = vbr || options.videoBitrate;
+  options.abr             = abr || options.audioBitrate;
   options.formats         = formats || options.formats;
   options.width           = parseInt(width) || options.width;
   options.height          = parseInt(height) || options.height;
