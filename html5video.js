@@ -76,6 +76,11 @@ var options = {
 var currentVideo = -1;
 var videoOptions = [];
 
+var logger                = null;
+var progressHandler       = null;
+var encodeCompleteHandler = null;
+var completeHandler       = null;
+
 //==================================================================
 //
 // Functions
@@ -83,15 +88,30 @@ var videoOptions = [];
 //==================================================================
 
 /**
- * Wrapper for log writing.
+ * The default logger function.
+ * Writes to console.log().
  *
  * @param string msg Message to write.
  */
-function writeLog(msg, force) {
+function defaultLogger(msg, force) {
   force = (typeof force === 'undefined') ? false : force;
   if (force) {
     console.log(msg);
   }
+}
+
+function setLogger(loggerFunc) {
+  logger = loggerFunc;
+}
+setLogger(defaultLogger);
+
+/**
+ * Wrapper for log writing.
+ * Calls the 'logger' function.
+ * @param string msg Message to write.
+ */
+function writeLog(msg, force) {
+  logger(msg, force);
 };
 
 /**
@@ -141,7 +161,8 @@ function validate(opts) {
   }
 
   // opts.formats
-  var formatsIsArray = opts.formats instanceof Array;
+  // var formatsIsArray = opts.formats instanceof Array;
+  var formatsIsArray = Array.isArray(opts.formats);
   if (!formatsIsArray) {
     writeLog("ERROR! 'formats' must be an array.", FORCE_LOG);
     return false;
@@ -350,7 +371,7 @@ var processOptions = function(opts) {
 
     writeLog("Processing format '" + format + "'...", opts.verbose);
     writeLog("  Source: " + opt.src, opts.verbose);
-    writeLog("  Output: " + opt.put, opts.verbose);
+    writeLog("  Output: " + opt.out, opts.verbose);
     writeLog("  Video Bitrate: " + opt.vbr, opts.verbose);
     writeLog("  Audio Bitrate: " + opt.abr, opts.verbose);
     writeLog("  Video Codec: " + opt.vcodec, opts.verbose);
@@ -388,11 +409,9 @@ var processOptions = function(opts) {
 };
 
 /**
- * Shows encoding progress.
- *
- * @param object progress Object with progress data.
+ * Default `onProgress` event handler.
  */
-var onProgress = function(progress) {
+var defaultProgressHandler = function(progress) {
   if (options.verbose || options.progress) {
     var s = CLEAR_LINE + "  Encoding: " + progress.percent.toFixed(2) + "% "
           + "current rate: " + progress.currentFps + "fps, "
@@ -404,27 +423,88 @@ var onProgress = function(progress) {
 };
 
 /**
- * Complete handler for encoding.
- *
- * @param object stdout
- * @param object stderr
+ * Sets the progress handler function.
  */
-var onComplete = function(stdout, stderr) {
+var setProgressHandler = function(progFunc) {
+  progressHandler = progFunc;
+}
+setProgressHandler(defaultProgressHandler);
 
-  // if (stderr) { console.log(stderr); }
+/**
+ * Shows encoding progress.
+ *
+ * @param object progress Object with progress data.
+ */
+var onProgress = function(progress) {
+  progressHandler(progress);
+};
 
+/**
+ * Default `complete` function handler.
+ */
+var defaultCompleteHandler = function() {
+  writeLog("Done encoding all videos!", FORCE_LOG);
+};
+
+/**
+ * Sets the complete function handler.
+ */
+var setCompleteHandler = function(doneFunc) {
+  completeHandler = doneFunc;
+};
+setCompleteHandler(defaultCompleteHandler);
+
+/**
+ * Called when all encoding is complete.
+ */
+var onComplete = function() {
+  completeHandler();
+}
+
+/**
+ * Encodes the next video.
+ */
+var next = function() {
+  currentVideo++;
+  if (currentVideo < videoOptions.length) {
+    encode(videoOptions[currentVideo]);
+  } else {
+    onComplete();
+  }
+};
+
+/**
+ * Default `encodeComplete` event handler.
+ */
+var defaultEncodeCompleteHandler = function(stdout, stderr) {
   util.print(CARRIAGE_RETURN + CLEAR_LINE);
   util.print("\n");
   var current = videoOptions[currentVideo].out;
   writeLog("Done encoding '" + current + "'.", FORCE_LOG);
 
-  currentVideo++;
-  if (currentVideo < videoOptions.length) {
-    encode(videoOptions[currentVideo]);
-  } else {
-    writeLog("Done encoding all videos!", FORCE_LOG);
-  }
+  next();
+};
 
+/**
+ * Sets the complete hanlder function.
+ */
+var setEncodeCompleteHandler = function(compFunc) {
+  encodeCompleteHandler = compFunc;
+};
+setEncodeCompleteHandler(defaultCompleteHandler);
+
+/**
+ * Complete handler for encoding.
+ *
+ * @param object stdout
+ * @param object stderr
+ */
+var onEncodeComplete = function(stdout, stderr) {
+  encodeCompleteHandler(stdout, stderr);
+
+  if (encodeCompleteHandler != defaultEncodeCompleteHandler) {
+    next();
+  }
 };
 
 /**
@@ -454,7 +534,7 @@ var encodeVideo = function(vid) {
     proc.addOptions(vid.opts);
   }
 
-  proc.saveToFile(vid.out, onComplete);
+  proc.saveToFile(vid.out, onEncodeComplete);
 
 };
 
@@ -471,17 +551,14 @@ var encodePoster = function(post) {
     proc.withSize(post.size);
   }
 
-  console.log("")
-
-
   proc.takeScreenshots({
       count: 1,
       timemarks: [ post.time.toString() ],
       filename: post.name
     }, post.out, function(err, filenames) {
-      console.log(filenames);
-      console.log('screenshots were saved');
-      onComplete();
+      writeLog(filesnames, FORCE_LOG);
+      writeLog('Screenshots were saved.', options.verbose);
+      onEncodeComplete();
   });
 
 };
@@ -556,4 +633,10 @@ var run = function(src, out, vbr, abr, formats, width, height, poster, posterTim
 
 };
 
-module.exports.run = run;
+module.exports.run  = run;
+module.exports.next = next;
+
+module.exports.setLogger                = setLogger;
+module.exports.setProgressHandler       = setProgressHandler;
+module.exports.setEncodeCompleteHandler = setEncodeCompleteHandler;
+module.exports.setCompleteHandler       = setCompleteHandler;

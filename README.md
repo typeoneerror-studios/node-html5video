@@ -171,6 +171,64 @@ Using all the options would look like:
 
     );
 
+### Custom Logging
+
+By default `h5v` simply writes log messages to `console.log()`. By setting a custom logger you can read `h5v` log messages and display them in your app. The log function has the following signature:
+
+    myLogFunction(msg, force);
+
+- __msg:__   _(string)_ The message to be logged.
+- __force:__ _(boolean)_ Whether to force the message. Setting this to true will ensure the message is displayed even when `verbose` is `false`.
+
+To set your custom logger use the `setLogger()` function:
+
+    h5v.setLogger(myLogFunction);
+
+Once set any subsequent logs will be routed to your custom logging function.
+
+### Progress and Completion Events
+
+You can handle `progress`, `encodeComplete` and `complete` events by setting a custom listener for each event.
+
+#### Progress
+
+The progress handler function has the following signature:
+
+    myProgressFunction(progressObj);
+
+Where `progressObj` is an `Object` with the following properties:
+
+- __frames:__  The total processed frame count.
+- __currentFps:__ The framerate at which FFMPEG is currently processing the file.
+- __currentKbps:__ The throughput at which FFMPEG is currently processing the file.
+- __targetSize:__ The current size of the target file.
+- __timemark:__ The timestamp of the frame being processed right now.
+- __percent:__ An estimation on the progress (metadata is used, durationsec * fps).
+
+To set your custom progress function use the `setProgressHandler()` function:
+
+    h5v.setProgressHandler(myProgressFunction);
+
+### Encode Complete
+
+The encode complete handler function has the following signature:
+
+    myEncodeCompleteFunction();
+
+To set your custom encode complete function use the `setEncodeCompleteHandler()` function:
+
+    setEncodeCompleteHandler(myEncodeCompleteFunction);
+
+### Complete
+
+The complete handler function has the following signature:
+
+    myCompleteFunction();
+
+To set your custome complete function use the `setCompleteHandler()` function:
+
+    setCompleteHandler(myCompleteFunction);
+
 ## Other Things to Keep In Mind
 
 - All file paths are relative to where you are executing `h5v`.
