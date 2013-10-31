@@ -491,7 +491,7 @@ var defaultEncodeCompleteHandler = function(stdout, stderr) {
 var setEncodeCompleteHandler = function(compFunc) {
   encodeCompleteHandler = compFunc;
 };
-setEncodeCompleteHandler(defaultCompleteHandler);
+setEncodeCompleteHandler(defaultEncodeCompleteHandler);
 
 /**
  * Complete handler for encoding.
@@ -556,7 +556,7 @@ var encodePoster = function(post) {
       timemarks: [ post.time.toString() ],
       filename: post.name
     }, post.out, function(err, filenames) {
-      writeLog(filesnames, FORCE_LOG);
+      writeLog(filenames, FORCE_LOG);
       writeLog('Screenshots were saved.', options.verbose);
       onEncodeComplete();
   });
@@ -603,13 +603,13 @@ var encode = function(vid) {
 var run = function(src, out, vbr, abr, formats, width, height, poster, posterTimestamp, onlyPoster, verbose, progress, timeout, opts) {
 
   options.src             = getAbsolutePathToFile(src);
-  options.output          = (typeof out != 'undefined') ? getAbsolutePathToFile(out.replace('{src_name}', src)) : options.output.replace('{src_name}', src)
+  options.output          = (typeof out != 'undefined') ? getAbsolutePathToFile(out.replace('{src_name}', src)) : options.output.replace('{src_name}', src);
   options.vbr             = vbr || options.videoBitrate;
   options.abr             = abr || options.audioBitrate;
   options.formats         = formats || options.formats;
   options.width           = parseInt(width) || options.width;
   options.height          = parseInt(height) || options.height;
-  options.poster          = poster || options.poster;
+  options.poster          = (typeof poster != 'undefined') ? getAbsolutePathToFile(poster.replace('{src_name}', src)) : options.poster.replace('{src_name}', src);
   options.posterTimestamp = posterTimestamp || options.posterTimestamp;
   options.onlyPoster      = (onlyPoster === true) ? true : false;
   options.verbose         = (verbose === true) ? true : false;
