@@ -1,1 +1,0 @@
-The sample video "tail_chase.mov" is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0). For details please view the licenese online at: http://creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US.
