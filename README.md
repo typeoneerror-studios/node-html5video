@@ -205,9 +205,9 @@ Where `progressObj` is an `Object` with the following properties:
 - __timemark:__ The timestamp of the frame being processed right now.
 - __percent:__ An estimation on the progress (metadata is used, durationsec * fps).
 
-To set your custom progress function use the `setProgressHandler()` function:
+To set your custom progress function use the `addEventListener()` function:
 
-    h5v.setProgressHandler(myProgressFunction);
+    h5v.addEventListener(h5v.EVENT_PROGRESS, myProgressFunction);
 
 ### Encode Complete
 
@@ -215,9 +215,9 @@ The encode complete handler function has the following signature:
 
     myEncodeCompleteFunction();
 
-To set your custom encode complete function use the `setEncodeCompleteHandler()` function:
+To set your custom encode complete function use the `addEventListener()` function:
 
-    setEncodeCompleteHandler(myEncodeCompleteFunction);
+    h5v.addEventListener(h5v.EVENT_ENCODE_COMPLETE, myEncodeCompleteFunction);
 
 ### Complete
 
@@ -225,9 +225,13 @@ The complete handler function has the following signature:
 
     myCompleteFunction();
 
-To set your custome complete function use the `setCompleteHandler()` function:
+To set your custome complete function use the `addEventListener()` function:
 
-    setCompleteHandler(myCompleteFunction);
+    h5v.addEventListener(h5v.EVENT_COMPLETE, myCompleteFunction);
+
+You can remove any event listener with the `removeEventListener()` function:
+
+    h5v.removeEventListener(h5v.EVENT_COMPLETE);
 
 ## Other Things to Keep In Mind
 

@@ -81,6 +81,10 @@ var progressHandler       = null;
 var encodeCompleteHandler = null;
 var completeHandler       = null;
 
+var EVENT_PROGRESS        = 'progress';
+var EVENT_ENCODE_COMPLETE = 'encodeComplete';
+var EVENT_COMPLETE        = 'complete';
+
 //==================================================================
 //
 // Functions
@@ -423,14 +427,6 @@ var defaultProgressHandler = function(progress) {
 };
 
 /**
- * Sets the progress handler function.
- */
-var setProgressHandler = function(progFunc) {
-  progressHandler = progFunc;
-}
-setProgressHandler(defaultProgressHandler);
-
-/**
  * Shows encoding progress.
  *
  * @param object progress Object with progress data.
@@ -445,14 +441,6 @@ var onProgress = function(progress) {
 var defaultCompleteHandler = function() {
   writeLog("Done encoding all videos!", FORCE_LOG);
 };
-
-/**
- * Sets the complete function handler.
- */
-var setCompleteHandler = function(doneFunc) {
-  completeHandler = doneFunc;
-};
-setCompleteHandler(defaultCompleteHandler);
 
 /**
  * Called when all encoding is complete.
@@ -486,14 +474,6 @@ var defaultEncodeCompleteHandler = function(stdout, stderr) {
 };
 
 /**
- * Sets the complete hanlder function.
- */
-var setEncodeCompleteHandler = function(compFunc) {
-  encodeCompleteHandler = compFunc;
-};
-setEncodeCompleteHandler(defaultEncodeCompleteHandler);
-
-/**
  * Complete handler for encoding.
  *
  * @param object stdout
@@ -506,6 +486,41 @@ var onEncodeComplete = function(stdout, stderr) {
     next();
   }
 };
+
+/**
+ * Adds an event listener.
+ *
+ * @param string eventName Name of the event to listen for.
+ * @param function handlerFunc The function to handle the event.
+ */
+var addEventListener = function(eventName, handlerFunc) {
+  if (eventName == EVENT_PROGRESS) {
+    progressHandler = handlerFunc;
+  } else if (eventName == EVENT_ENCODE_COMPLETE) {
+    encodeCompleteHandler = handlerFunc;
+  } else if (eventName == EVENT_COMPLETE) {
+    completeHandler = handlerFunc;
+  }
+};
+
+addEventListener(EVENT_PROGRESS, defaultProgressHandler);
+addEventListener(EVENT_ENCODE_COMPLETE, defaultEncodeCompleteHandler);
+addEventListener(EVENT_COMPLETE, defaultCompleteHandler);
+
+/**
+ * Removes an event listener.
+ *
+ * @param string eventName Name of the event to remove.
+ */
+var removeEventListener = function(eventName) {
+  if (eventName == EVENT_PROGRESS) {
+    progressHandler = defaultProgressHandler;
+  } else if (eventName == EVENT_ENCODE_COMPLETE) {
+    encodeCompleteHandler = defaultEncodeCompleteHandler;
+  } else if (eventName == EVENT_COMPLETE) {
+    completeHandler = defaultCompleteHandler;
+  }
+}
 
 /**
  * Does the actual encoding work for videos.
@@ -633,10 +648,16 @@ var run = function(src, out, vbr, abr, formats, width, height, poster, posterTim
 
 };
 
+module.exports.EVENT_PROGRESS        = EVENT_PROGRESS;
+module.exports.EVENT_ENCODE_COMPLETE = EVENT_ENCODE_COMPLETE;
+module.exports.EVENT_COMPLETE        = EVENT_COMPLETE;
+
 module.exports.run  = run;
 module.exports.next = next;
 
-module.exports.setLogger                = setLogger;
-module.exports.setProgressHandler       = setProgressHandler;
-module.exports.setEncodeCompleteHandler = setEncodeCompleteHandler;
-module.exports.setCompleteHandler       = setCompleteHandler;
+module.exports.setLogger           = setLogger;
+module.exports.addEventListener    = addEventListener;
+module.exports.removeEventListener = removeEventListener;
+// module.exports.setProgressHandler       = setProgressHandler;
+// module.exports.setEncodeCompleteHandler = setEncodeCompleteHandler;
+// module.exports.setCompleteHandler       = setCompleteHandler;
