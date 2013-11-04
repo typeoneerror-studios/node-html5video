@@ -233,6 +233,12 @@ You can remove any event listener with the `removeEventListener()` function:
 
     h5v.removeEventListener(h5v.EVENT_COMPLETE);
 
+## Setting the path to FFmpeg
+
+You can set a custom path to FFmpeg (i.e., if you are packaging FFmpeg in an app) with the `setFfmpegPath()` function:
+
+    h5v.setFfmpegPath('path/to/ffmpeg');
+
 ## Other Things to Keep In Mind
 
 - All file paths are relative to where you are executing `h5v`.

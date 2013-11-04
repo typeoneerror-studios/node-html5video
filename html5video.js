@@ -76,11 +76,15 @@ var options = {
 var currentVideo = -1;
 var videoOptions = [];
 
+var ffmpegPath = 'ffmpeg';
+
 var logger                = null;
+var startHandler          = null;
 var progressHandler       = null;
 var encodeCompleteHandler = null;
 var completeHandler       = null;
 
+var EVENT_START           = 'start';
 var EVENT_PROGRESS        = 'progress';
 var EVENT_ENCODE_COMPLETE = 'encodeComplete';
 var EVENT_COMPLETE        = 'complete';
@@ -412,6 +416,14 @@ var processOptions = function(opts) {
   return videoOptions;
 };
 
+var defaultStartHandler = function(msg, force) {
+  writeLog(msg, force);
+};
+
+var onStart = function(msg) {
+  startHandler(msg);
+}
+
 /**
  * Default `onProgress` event handler.
  */
@@ -494,7 +506,9 @@ var onEncodeComplete = function(stdout, stderr) {
  * @param function handlerFunc The function to handle the event.
  */
 var addEventListener = function(eventName, handlerFunc) {
-  if (eventName == EVENT_PROGRESS) {
+  if (eventName == EVENT_START) {
+    startHandler = handlerFunc;
+  } else if (eventName == EVENT_PROGRESS) {
     progressHandler = handlerFunc;
   } else if (eventName == EVENT_ENCODE_COMPLETE) {
     encodeCompleteHandler = handlerFunc;
@@ -503,6 +517,7 @@ var addEventListener = function(eventName, handlerFunc) {
   }
 };
 
+addEventListener(EVENT_START, defaultStartHandler);
 addEventListener(EVENT_PROGRESS, defaultProgressHandler);
 addEventListener(EVENT_ENCODE_COMPLETE, defaultEncodeCompleteHandler);
 addEventListener(EVENT_COMPLETE, defaultCompleteHandler);
@@ -513,7 +528,9 @@ addEventListener(EVENT_COMPLETE, defaultCompleteHandler);
  * @param string eventName Name of the event to remove.
  */
 var removeEventListener = function(eventName) {
-  if (eventName == EVENT_PROGRESS) {
+  if (eventName == EVENT_START) {
+    startHandler = defaultStartHandler;
+  } else if (eventName == EVENT_PROGRESS) {
     progressHandler = defaultProgressHandler;
   } else if (eventName == EVENT_ENCODE_COMPLETE) {
     encodeCompleteHandler = defaultEncodeCompleteHandler;
@@ -529,7 +546,8 @@ var removeEventListener = function(eventName) {
  */
 var encodeVideo = function(vid) {
 
-  writeLog("Encoding '" + vid.out + "'...", FORCE_LOG);
+  // writeLog("Encoding '" + vid.out + "'...", FORCE_LOG);
+  onStart("Encoding '" + vid.out + "'...", FORCE_LOG);
   writeLog("", options.verbose);
 
   var proc = ffmpeg({ source: vid.src, timeout: options.timeout, nolog: !options.verbose })
@@ -549,6 +567,8 @@ var encodeVideo = function(vid) {
     proc.addOptions(vid.opts);
   }
 
+  proc.setFfmpegPath(ffmpegPath);
+
   proc.saveToFile(vid.out, onEncodeComplete);
 
 };
@@ -560,11 +580,15 @@ var encodeVideo = function(vid) {
  */
 var encodePoster = function(post) {
 
+  onStart("Encoding poster '" + post.name + "'", FORCE_LOG);
+
   var proc = new ffmpeg({ source: post.src, timeout: options.timeout, nolog: !options.verbose });
 
   if (post.size) {
     proc.withSize(post.size);
   }
+
+  proc.setFfmpegPath(ffmpegPath);
 
   proc.takeScreenshots({
       count: 1,
@@ -648,16 +672,19 @@ var run = function(src, out, vbr, abr, formats, width, height, poster, posterTim
 
 };
 
+var setFfmpegPath = function(pathToFfmpeg) {
+  ffmpegPath = pathToFfmpeg;
+};
+
+module.exports.EVENT_START           = EVENT_START;
 module.exports.EVENT_PROGRESS        = EVENT_PROGRESS;
 module.exports.EVENT_ENCODE_COMPLETE = EVENT_ENCODE_COMPLETE;
 module.exports.EVENT_COMPLETE        = EVENT_COMPLETE;
 
-module.exports.run  = run;
-module.exports.next = next;
+module.exports.run           = run;
+module.exports.next          = next;
+module.exports.setFfmpegPath = setFfmpegPath;
 
 module.exports.setLogger           = setLogger;
 module.exports.addEventListener    = addEventListener;
 module.exports.removeEventListener = removeEventListener;
-// module.exports.setProgressHandler       = setProgressHandler;
-// module.exports.setEncodeCompleteHandler = setEncodeCompleteHandler;
-// module.exports.setCompleteHandler       = setCompleteHandler;
