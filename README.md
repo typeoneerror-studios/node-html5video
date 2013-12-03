@@ -4,11 +4,11 @@ A command line and [Node](http://nodejs.org) utility for encoding HTML5-ready vi
 
 ## Overview
 
-Fully supporting HTML5 video involves [encoding your videos in multiple formats](http://blog.zencoder.com/2010/10/06/how-many-formats-do-i-need-for-html5-video/) which is a cumbersome process begging for automation. `html5video` (`h5v`) eases your pain, allowing you to encode to the [big three web video formats](http://en.wikipedia.org/wiki/HTML5_video#Supported_video_formats) (h264, webm and ogv) along with a poster image all in a single line. `h5v` can also be hooked into your Node programs if you so desire.
+Fully supporting HTML5 video involves [encoding your videos in multiple formats](http://blog.zencoder.com/2010/10/06/how-many-formats-do-i-need-for-html5-video/) which is a cumbersome process begging for automation. `html5video` eases your pain, allowing you to encode to the [big three web video formats](http://en.wikipedia.org/wiki/HTML5_video#Supported_video_formats) (h264, webm and ogv) along with a poster image all in a single line. `html5video` can also be hooked into your Node programs if you so desire.
 
 ## Installation
 
-In order to use `h5v` you must first have [ffmpeg](http://www.ffmpeg.org/) (along with all encoding libraries like libx264 and libmp3lame) installed on your system. Once you have ffmpeg installed just open a command prompt and type:
+In order to use `html5video` you must first have [ffmpeg](http://www.ffmpeg.org/) (along with all encoding libraries like libx264 and libmp3lame) installed on your system. Once you have ffmpeg installed just open a command prompt and type:
 
     $ npm install -g git://github.com/typeoneerror-studios/node-html5video.git
 
@@ -16,19 +16,15 @@ To verify the installation type:
 
     $ html5video --help
 
-or the short version
-
-    $ h5v -h
-
-## Using h5v From the Command Line
+## Using html5video From the Command Line
 
 ### The Basics
 
-The primary goal of `h5v` is to make video encoding a no-brainer. As such `h5v` only requires two options to run `src`, or `s` and `out`, or `o`. These options specify the source video and the output video name (without extension) respectively.
+The primary goal of `html5video` is to make video encoding a no-brainer. As such `html5video` only requires two options to run `src`, or `s` and `out`, or `o`. These options specify the source video and the output video name (without extension) respectively.
 
-    $ h5v --src my_src_video.mov --out my_html5_video
+    $ html5video --src my_src_video.mov --out my_html5_video
 
-This will encode "my_html5_video.mp4" (h264), "my_html5_video.webm" (webm), and "my_html5_video.ogv" (ogg) from the source video, "my_src_video.mov". This will also save out a jpg called "poster.jpg" to serve as the poster image while your video loads. Note that all file paths are relative to the location from which you are executing `h5v`.
+This will encode "my_html5_video.mp4" (h264), "my_html5_video.webm" (webm), and "my_html5_video.ogv" (ogg) from the source video, "my_src_video.mov". This will also save out a jpg called "poster.jpg" to serve as the poster image while your video loads. Note that all file paths are relative to the location from which you are executing `html5video`.
 
 ### Resizing
 
@@ -45,20 +41,20 @@ Often your source video will be much larger than you need. In these cases you ca
     $ html5video --src my_src_video.mov --out my_html5_video --height 300
 
     # Go nuts: resize the width and the height to whatever your heart's desire.
-    $ h5v -s my_src_video.mov -o my_html5_video -w 200 -h 500
+    $ html5video -s my_src_video.mov -o my_html5_video -w 200 -h 500
 
 ### Bitrates
 
 Video looking grainy? Audio sounding crappy? Adjust their bitrates:
 
     # Adjusting the video bitrate, short version
-    $ h5v --src my_src_video.mov --out my_html5_video -vbr 1500k
+    $ html5video --src my_src_video.mov --out my_html5_video -vbr 1500k
 
     # Adjusting the video bitrate, long version
     $ html5video --src my_src_video.mov --out my_html5_video --videobitrate 800k
 
     # Adjusting the audio bitrate, short version
-    $ h5v --src my_src_video.mov --out my_html5_video -abr 256k
+    $ html5video --src my_src_video.mov --out my_html5_video -abr 256k
 
     # Adjusting the audio bitrate, long version
     $ html5video --src my_src_video.mov --out my_html5_video --audiobitrate 512k
@@ -68,7 +64,7 @@ Video looking grainy? Audio sounding crappy? Adjust their bitrates:
 
 ### Specifying Output Formats
 
-By default `h5v` encodes to three formats:
+By default `html5video` encodes to three formats:
 
 1. [h264](http://en.wikipedia.org/wiki/H.264/MPEG-4_AVC)
 2. [webm](http://en.wikipedia.org/wiki/WebM)
@@ -77,61 +73,61 @@ By default `h5v` encodes to three formats:
 If you don't want to encode to all of these formats you can specify one of them instead:
 
     # Only encode a webm video
-    $ h5v -s my_src_video.mov -o -my_html5_video -f webm
+    $ html5video -s my_src_video.mov -o -my_html5_video -f webm
 
 You can also specify more than one of them:
 
     # Encode webm and h264
-    $ h5v -s my_src_video.mov -o -my_html5_video --formats webm,h264
+    $ html5video -s my_src_video.mov -o -my_html5_video --formats webm,h264
 
 ### Poster Images
 
-By default `h5v` will encode a poster image called "poster.jpg" and save it alongside your encoded videos. You can specify a different name for this image with the `poster` option:
+By default `html5video` will encode a poster image called "poster.jpg" and save it alongside your encoded videos. You can specify a different name for this image with the `poster` option:
 
-    $ h5v -s my_src_video.mov -o -my_html5_video --poster my_poster
+    $ html5video -s my_src_video.mov -o -my_html5_video --poster my_poster
 
 Also by default the poster image will be taken at from the exact start of the video. You can change this by passing in a different time (in seconds):
 
     # Take the poster image at the 5 second mark
-    $ h5v -s my_src_video.mov -o -my_html5_video --postertime 5
+    $ html5video -s my_src_video.mov -o -my_html5_video --postertime 5
 
 If you're trying to hone in a good time to grab your poster image and don't want to re-encode all your videos just to get another poster use the `onlyposter` option:
 
     # Skip video encoding and just grab a poster image
-    $ h5v -s my_src_video.mov -o -my_html5_video --postertime 5 --onlyposter
+    $ html5video -s my_src_video.mov -o -my_html5_video --postertime 5 --onlyposter
 
 ### Timeout and Other Options
 
-`h5v` will timeout after 10 minutes by default, meaning your video must encode in less than 10 minutes (timeout is per-video). You can adjust this with the `timeout` option:
+`html5video` will timeout after 10 minutes by default, meaning your video must encode in less than 10 minutes (timeout is per-video). You can adjust this with the `timeout` option:
 
     # Change the timeout to 20 minutes, or 1200 seconds
-    $ h5v -s my_src_video.mov -o -my_html5_video --timeout 1200
+    $ html5video -s my_src_video.mov -o -my_html5_video --timeout 1200
 
-ffmpeg supports [plenty of options](http://ffmpeg.org/ffmpeg.html#Options) that are not exposed by the `h5v` API. The `options` option provides a way for you to pass these extra options into `h5v`. Extra options are passed in much like you would were you using ffmpeg directly with a comma separating each option.
+ffmpeg supports [plenty of options](http://ffmpeg.org/ffmpeg.html#Options) that are not exposed by the `html5video` API. The `options` option provides a way for you to pass these extra options into `html5video`. Extra options are passed in much like you would were you using ffmpeg directly with a comma separating each option.
 
     # Pass in a single option
-    $ h5v -s my_src_video.mov -o -my_html5_video --options -ab 160000
+    $ html5video -s my_src_video.mov -o -my_html5_video --options -ab 160000
 
     # Pass in two options
-    $ h5v -s my_src_video.mov -o -my_html5_video --options -ab 160000,-g 30
+    $ html5video -s my_src_video.mov -o -my_html5_video --options -ab 160000,-g 30
 
 ### Logging
 
-There are two options for logging output with `h5v`: `progress` and `verbose`. By default `progress` in enabled, giving you progress updates as your video is encoded. `verbose` gives you much more information and is primarily used to diagnose problems. It is off by default.
+There are two options for logging output with `html5video`: `progress` and `verbose`. By default `progress` in enabled, giving you progress updates as your video is encoded. `verbose` gives you much more information and is primarily used to diagnose problems. It is off by default.
 
     # Disable progress
-    $ h5v -s my_src_video.mov -o -my_html5_video --progress false
+    $ html5video -s my_src_video.mov -o -my_html5_video --progress false
 
     # Enable verbose logging
-    $ h5v -s my_src_video.mov -o -my_html5_video --verbose
+    $ html5video -s my_src_video.mov -o -my_html5_video --verbose
 
-## Using h5v in Node
+## Using html5video in Node
 
-Though `h5v` was intended to be run primarily from the command line it's also possible to use it via a Node application. To use `h5v` in your Node app simply require it like so:
+Though `html5video` was intended to be run primarily from the command line it's also possible to use it via a Node application. To use `html5video` in your Node app simply require it like so:
 
-    var h5v = require('html5video');
+    var html5video = require('html5video');
 
-When used in Node, `h5v` has a single method `run()` that takes the following parameters, in order:
+When used in Node, `html5video` has a single method `run()` that takes the following parameters, in order:
 
 - __src:__             _(string)_ Relative path to the source video. Required.
 - __out:__             _(string)_ Relative path to the output video. Optional. Default: {source-video-name}-html5.
@@ -149,11 +145,11 @@ When used in Node, `h5v` has a single method `run()` that takes the following pa
 
 The simplest usage would look like this:
 
-    h5v.run('my-source-video.mov');
+    html5video.run('my-source-video.mov');
 
 Using all the options would look like:
 
-    h5v.run(
+    html5video.run(
 
         'my-source-video.mov',      // src
         'my-html5-video',           // out
@@ -173,7 +169,7 @@ Using all the options would look like:
 
 ### Custom Logging
 
-By default `h5v` simply writes log messages to `console.log()`. By setting a custom logger you can read `h5v` log messages and display them in your app. The log function has the following signature:
+By default `html5video` simply writes log messages to `console.log()`. By setting a custom logger you can read `html5video` log messages and display them in your app. The log function has the following signature:
 
     myLogFunction(msg, force);
 
@@ -182,7 +178,7 @@ By default `h5v` simply writes log messages to `console.log()`. By setting a cus
 
 To set your custom logger use the `setLogger()` function:
 
-    h5v.setLogger(myLogFunction);
+    html5video.setLogger(myLogFunction);
 
 Once set any subsequent logs will be routed to your custom logging function.
 
@@ -207,7 +203,7 @@ Where `progressObj` is an `Object` with the following properties:
 
 To set your custom progress function use the `addEventListener()` function:
 
-    h5v.addEventListener(h5v.EVENT_PROGRESS, myProgressFunction);
+    html5video.addEventListener(html5video.EVENT_PROGRESS, myProgressFunction);
 
 ### Encode Complete
 
@@ -217,7 +213,7 @@ The encode complete handler function has the following signature:
 
 To set your custom encode complete function use the `addEventListener()` function:
 
-    h5v.addEventListener(h5v.EVENT_ENCODE_COMPLETE, myEncodeCompleteFunction);
+    html5video.addEventListener(html5video.EVENT_ENCODE_COMPLETE, myEncodeCompleteFunction);
 
 ### Complete
 
@@ -227,21 +223,21 @@ The complete handler function has the following signature:
 
 To set your custome complete function use the `addEventListener()` function:
 
-    h5v.addEventListener(h5v.EVENT_COMPLETE, myCompleteFunction);
+    html5video.addEventListener(html5video.EVENT_COMPLETE, myCompleteFunction);
 
 You can remove any event listener with the `removeEventListener()` function:
 
-    h5v.removeEventListener(h5v.EVENT_COMPLETE);
+    html5video.removeEventListener(html5video.EVENT_COMPLETE);
 
 ## Setting the path to FFmpeg
 
 You can set a custom path to FFmpeg (i.e., if you are packaging FFmpeg in an app) with the `setFfmpegPath()` function:
 
-    h5v.setFfmpegPath('path/to/ffmpeg');
+    html5video.setFfmpegPath('path/to/ffmpeg');
 
 ## Other Things to Keep In Mind
 
-- All file paths are relative to where you are executing `h5v`.
+- All file paths are relative to where you are executing `html5video`.
 - If you cannot encode a video in a specific format make sure ffmpeg knows about the format by typing `ffmpeg -formats` into your command prompt. This will display a list of formats that ffmpeg is aware of.
 
 ## License
