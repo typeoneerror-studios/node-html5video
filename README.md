@@ -1,13 +1,17 @@
-# html5video
+html5video
+==========
 
 A command line and [Node](http://nodejs.org) utility for encoding HTML5-ready videos.
 
-## Overview
+
+Overview
+--------
 
 Fully supporting HTML5 video involves [encoding your videos in multiple formats](http://blog.zencoder.com/2010/10/06/how-many-formats-do-i-need-for-html5-video/) which is a cumbersome process begging for automation. `html5video` eases your pain, allowing you to encode to the [big three web video formats](http://en.wikipedia.org/wiki/HTML5_video#Supported_video_formats) (h264, webm and ogv) along with a poster image all in a single line. `html5video` can also be hooked into your Node programs if you so desire.
 
-## Installation
 
+Installation
+------------
 In order to use `html5video` you must first have [ffmpeg](http://www.ffmpeg.org/) (along with all encoding libraries like libx264 and libmp3lame) installed on your system. Once you have ffmpeg installed just open a command prompt and type:
 
     $ npm install -g git://github.com/typeoneerror-studios/node-html5video.git
@@ -16,11 +20,13 @@ To verify the installation type:
 
     $ html5video --help
 
-## Using html5video From the Command Line
+
+Using html5video From the Command Line
+--------------------------------------
 
 ### The Basics
 
-The primary goal of `html5video` is to make video encoding a no-brainer. As such `html5video` only requires two options to run `src`, or `s` and `out`, or `o`. These options specify the source video and the output video name (without extension) respectively.
+The primary goal of `html5video` is to make video encoding a no-brainer. As such, `html5video` only requires two options to run `src`, or `s` and `out`, or `o`. These options specify the source video and the output video name (without extension) respectively.
 
     $ html5video --src my_src_video.mov --out my_html5_video
 

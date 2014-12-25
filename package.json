@@ -1,6 +1,6 @@
 {
   "name": "html5video",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A utility for encoding your videos in multiple formats for HTML5 playback.",
   "author": "Sean Monahan <sean.monahan@typeoneerror.com>",
   "license": "MIT",
